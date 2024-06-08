@@ -23,23 +23,22 @@ public class ProductController {
 
 	@GetMapping()
 	public List<Product> getAllProduct(){
-		return List.of(new Product());
+		return this.productService.getAllProducts();
 	}
 	@PostMapping("/create")
 	public Product createProduct(@RequestBody Product product){
 
-		return new Product();
+		return this.productService.createProduct(product);
 	}
 
 	@PutMapping("/{id}")
 	public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product){
 
-		return new Product();
+		return this.productService.updateProduct(id, product);
 	}
 
 	@PatchMapping("/{id}")
 	public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product){
-
 		return new Product();
 	}
 

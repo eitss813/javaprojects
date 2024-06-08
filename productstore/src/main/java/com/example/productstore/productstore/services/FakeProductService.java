@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class FakeProductService implements ProductService {
-	private RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 
 	@Autowired
 	FakeProductService(RestTemplate restTemplate) {
@@ -19,19 +20,34 @@ public class FakeProductService implements ProductService {
 
 	@Override
 	public Product getProductById(Long id) {
+
 		FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
 
+		assert fakeStoreProductDto != null;
 		return convertFakeStoreProductToProduct(fakeStoreProductDto);
 	}
 
 	@Override
 	public List<Product> getAllProducts() {
-		return null;
+		FakeStoreProductDto[] fakeProdList = this.restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
+
+		List<Product> productList = new ArrayList<>();
+		assert fakeProdList != null;
+		for(FakeStoreProductDto fakeStoreProductDto : fakeProdList){
+			Product product = convertFakeStoreProductToProduct(fakeStoreProductDto);
+			productList.add(product);
+		}
+
+		return productList;
 	}
 
 	@Override
-	public Product updateProduct(Long id) {
-		return null;
+	public Product updateProduct(Long id, Product product) {
+		FakeStoreProductDto fakeStoreProductDto = convertToFakeProductDto(product);
+
+		 this.restTemplate.put("https://fakestoreapi.com/products/" + id, fakeStoreProductDto);
+
+		return product;
 	}
 
 	@Override
@@ -46,7 +62,13 @@ public class FakeProductService implements ProductService {
 
 	@Override
 	public Product createProduct(Product product) {
-		return null;
+		// Convert product to dto
+        FakeStoreProductDto fakeStoreProductDto = convertToFakeProductDto(product);
+
+		fakeStoreProductDto = this.restTemplate.postForObject("https://fakestoreapi.com/products", fakeStoreProductDto ,FakeStoreProductDto.class);
+
+		assert fakeStoreProductDto != null;
+		return convertFakeStoreProductToProduct(fakeStoreProductDto);
 	}
 
 	public Product convertFakeStoreProductToProduct(FakeStoreProductDto fakeStoreProductDto) {
@@ -66,5 +88,28 @@ public class FakeProductService implements ProductService {
 
 		return product;
 	}
+
+	/*
+		Product to FakeProduct converter
+		@param Product product
+	 */
+
+	public FakeStoreProductDto convertToFakeProductDto(Product product) {
+		FakeStoreProductDto fakeProductDto = new FakeStoreProductDto();
+		fakeProductDto.setId(product.getId());
+		fakeProductDto.setTitle(product.getTitle());
+		fakeProductDto.setPrice(product.getPrice());
+
+		if(product.getCategory() != null){
+			fakeProductDto.setCategory(product.getCategory().getTitle());
+		}else{
+			fakeProductDto.setCategory(null);
+		}
+
+		fakeProductDto.setDescription(product.getDescription());
+		fakeProductDto.setImage(product.getImage());
+		return fakeProductDto;
+	}
+
 
 }
