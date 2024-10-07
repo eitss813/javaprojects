@@ -1,6 +1,6 @@
 package com.example.productstore.productstore.services;
 
-import com.example.productstore.productstore.dots.FakeStoreProductDto;
+import com.example.productstore.productstore.dtos.FakeStoreProductDto;
 import com.example.productstore.productstore.models.Category;
 import com.example.productstore.productstore.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
+//@Primary
 public class FakeProductService implements ProductService {
 	private final RestTemplate restTemplate;
 

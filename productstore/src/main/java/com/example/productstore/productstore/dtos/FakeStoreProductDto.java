@@ -1,4 +1,4 @@
-package com.example.productstore.productstore.dots;
+package com.example.productstore.productstore.dtos;
 
 import com.example.productstore.productstore.models.Category;
 import lombok.Getter;
