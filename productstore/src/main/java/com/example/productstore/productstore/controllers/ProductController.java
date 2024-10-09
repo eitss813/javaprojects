@@ -6,7 +6,6 @@ import com.example.productstore.productstore.models.Product;
 import com.example.productstore.productstore.services.ProductService;
 import com.example.productstore.productstore.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +19,6 @@ public class ProductController {
 	private ProductService productService;
 	@Autowired
 	private TokenService tokenService;
-
-//	ProductController(ProductService productService){
-//		this.productService = productService;
-//
-//	}
 
 	@GetMapping("/{id}")
 	// ideally it should return Product DTO
@@ -40,9 +34,6 @@ public class ProductController {
 		}
 
 		return new ResponseEntity<Product>(productService.getProductById(id), HttpStatus.OK);
-
-
-
 
 	}
 
